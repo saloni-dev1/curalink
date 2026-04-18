@@ -1,7 +1,8 @@
 const axios = require('axios');
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-const MODEL = process.env.LLM_MODEL || 'mistral';
+const HF_API_KEY = process.env.HF_API_KEY;
+const HF_API_URL = 'https://router.huggingface.co/sambanova/v1/chat/completions';
+const HF_MODEL = 'Meta-Llama-3.3-70B-Instruct';
 
 const SYSTEM_PROMPT = `You are Curalink, an expert AI medical research assistant. You receive:
 1. Patient context: disease, query, name, location
@@ -73,27 +74,40 @@ Generate a comprehensive, personalized research summary as JSON.`;
 async function queryLLM(disease, query, patientName, publications, trials, conversationHistory = []) {
   const userMessage = buildPrompt(disease, query, patientName, publications, trials, conversationHistory);
 
-  try {
-    const res = await axios.post(`${OLLAMA_URL}/api/chat`, {
-      model: MODEL,
-      stream: false,
-      options: { temperature: 0.3, num_predict: 2000 },
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userMessage }
-      ]
-    }, { timeout: 60000 });
+  if (!HF_API_KEY) {
+    console.warn('HF_API_KEY not set — using fallback response');
+    return generateFallbackResponse(disease, query, patientName, publications, trials);
+  }
 
-    const content = res.data.message?.content || '';
+  try {
+    const res = await axios.post(
+      HF_API_URL,
+      {
+        model: HF_MODEL,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: userMessage }
+        ],
+        temperature: 0.3,
+        max_tokens: 2000,
+        stream: false
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${HF_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 60000
+      }
+    );
+
+    const content = res.data.choices?.[0]?.message?.content || '';
     // Strip any accidental markdown fences
     const clean = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     return JSON.parse(clean);
+
   } catch (err) {
-    if (err.code === 'ECONNREFUSED') {
-      // Fallback: return structured response without LLM
-      return generateFallbackResponse(disease, query, patientName, publications, trials);
-    }
-    console.error('LLM error:', err.message);
+    console.error('Hugging Face LLM error:', err.response?.data || err.message);
     return generateFallbackResponse(disease, query, patientName, publications, trials);
   }
 }

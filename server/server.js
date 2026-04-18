@@ -19,7 +19,7 @@ app.use('/api/query', queryRoutes);
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
 // MongoDB connect
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/curalink';
+const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
