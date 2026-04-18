@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 5000
 
 # Start Ollama, pull model, then start server
-CMD sh -c "ollama serve & sleep 8 && ollama pull ${LLM_MODEL:-mistral} && node index.js"
+CMD sh -c "node server.js"

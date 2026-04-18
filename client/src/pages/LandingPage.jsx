@@ -148,7 +148,7 @@ export default function LandingPage() {
             <span className={styles.dot}>·</span>
             <span className={styles.sourceBadge}>ClinicalTrials.gov</span>
             <span className={styles.dot}>·</span>
-            <span className={styles.sourceBadge}>Mistral via Ollama</span>
+            <span className={styles.sourceBadge}>Llama 3.3 via Hugging Face</span>
           </div>
         </div>
       </main>

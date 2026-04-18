@@ -107,7 +107,7 @@ export default function ChatPage() {
             <div className={styles.sourceItem}><span className={styles.sourceDot} style={{background:'#4fffb0'}} />PubMed NCBI</div>
             <div className={styles.sourceItem}><span className={styles.sourceDot} style={{background:'#00d4ff'}} />OpenAlex</div>
             <div className={styles.sourceItem}><span className={styles.sourceDot} style={{background:'#7b68ff'}} />ClinicalTrials.gov</div>
-            <div className={styles.sourceItem}><span className={styles.sourceDot} style={{background:'#ff9f43'}} />Mistral LLM</div>
+            <div className={styles.sourceItem}><span className={styles.sourceDot} style={{background:'#ff9f43'}} />Llama 3.3</div>
           </div>
         </div>
         <div className={styles.sidebarDivider} />
