@@ -28,8 +28,8 @@ Structured Response → UI
 
 ## Live Demo
 
-- **Frontend**: https://your-app.vercel.app
-- **Backend**: https://your-app.onrender.com
+- **Frontend**: https://curalink-client-eight.vercel.app/
+- **Backend**: https://curalink-server.vercel.app/
 
 ---
 
